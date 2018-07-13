@@ -18,6 +18,12 @@ export default class Game extends Component {
     selectedNumbers: [0, 4],
   };
 
+  selectNumber = index => {
+    this.setState(prevState => ({
+      selectedNumbers: [...prevState.selectedNumbers, index],
+    }));
+  };
+
   isSelected = index => this.state.selectedNumbers.indexOf(index) >= 0;
 
   render() {
@@ -33,10 +39,18 @@ export default class Game extends Component {
               <View style={styles.childContainer} key={idx}>
                 <RandomNumber
                   key={idx - 1}
+                  id={idx - 1}
                   number={this.randomNumbers[idx - 1]}
-                  isSelected={this.isSelected(idx - 1)}
+                  isDisabled={this.isSelected(idx - 1)}
+                  onPress={this.selectNumber}
                 />
-                <RandomNumber key={idx} number={num} isSelected={this.isSelected(idx)} />
+                <RandomNumber
+                  key={idx}
+                  id={idx}
+                  number={num}
+                  isDisabled={this.isSelected(idx)}
+                  onPress={this.selectNumber}
+                />
               </View>
             );
           }
