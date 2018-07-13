@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
+import RandomNumber from './RandomNumber';
+
 export default class Game extends Component {
   // TODO: Randomize order. Leaving this way for now for easy testing.
   randomNumbers = Array.from({ length: this.props.randomNumberCount }).map(() =>
@@ -23,12 +25,12 @@ export default class Game extends Component {
           if (idx % 2 === 1) {
             return (
               <View style={styles.childContainer} key={idx}>
-                <Text style={styles.option} key={idx - 1}>
-                  {this.randomNumbers[idx - 1]}
-                </Text>
-                <Text style={styles.option} key={idx}>
-                  {num}
-                </Text>
+                <RandomNumber
+                  style={styles.option}
+                  key={idx - 1}
+                  number={this.randomNumbers[idx - 1]}
+                />
+                <RandomNumber style={styles.option} key={idx} number={num} />
               </View>
             );
           }
@@ -68,15 +70,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 3,
     backgroundColor: 'steelblue',
-  },
-
-  option: {
-    marginHorizontal: 50,
-    width: 50,
-    backgroundColor: 'antiquewhite',
-    textAlign: 'center',
-    fontSize: 40,
-    height: 50,
-    width: 120,
   },
 });
