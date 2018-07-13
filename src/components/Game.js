@@ -15,22 +15,42 @@ export default class Game extends Component {
     .reduce((acc, cur) => acc + cur, 0);
 
   state = {
-    selectedNumbers: [0, 4],
+    selectedIds: [],
   };
 
   selectNumber = index => {
     this.setState(prevState => ({
-      selectedNumbers: [...prevState.selectedNumbers, index],
+      selectedIds: [...prevState.selectedIds, index],
     }));
   };
 
-  isSelected = index => this.state.selectedNumbers.indexOf(index) >= 0;
+  gameStatus = () => {
+    const selectedSum = this.state.selectedIds.reduce(
+      (acc, curr) => acc + this.randomNumbers[curr],
+      0
+    );
+
+    if (selectedSum < this.target) {
+      return 'PLAYING';
+    }
+
+    if (selectedSum === this.target) {
+      return 'WON';
+    }
+
+    if (selectedSum > this.target) {
+      return 'LOST';
+    }
+  };
+
+  isSelected = index => this.state.selectedIds.indexOf(index) >= 0;
 
   render() {
+    const gameStatus = this.gameStatus();
     return (
       <View style={styles.container}>
         <View style={styles.targetContainer}>
-          <Text style={styles.target}>{this.target}</Text>
+          <Text style={[styles.target, styles[`STATUS_${gameStatus}`]]}>{this.target}</Text>
         </View>
 
         {this.randomNumbers.map((num, idx) => {
@@ -41,14 +61,14 @@ export default class Game extends Component {
                   key={idx - 1}
                   id={idx - 1}
                   number={this.randomNumbers[idx - 1]}
-                  isDisabled={this.isSelected(idx - 1)}
+                  isDisabled={this.isSelected(idx - 1) || gameStatus !== 'PLAYING'}
                   onPress={this.selectNumber}
                 />
                 <RandomNumber
                   key={idx}
                   id={idx}
                   number={num}
-                  isDisabled={this.isSelected(idx)}
+                  isDisabled={this.isSelected(idx) || gameStatus !== 'PLAYING'}
                   onPress={this.selectNumber}
                 />
               </View>
@@ -77,7 +97,6 @@ const styles = StyleSheet.create({
   },
 
   target: {
-    backgroundColor: 'antiquewhite',
     textAlign: 'center',
     marginHorizontal: 50,
     fontSize: 60,
@@ -90,5 +109,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 3,
     backgroundColor: 'steelblue',
+  },
+
+  STATUS_PLAYING: {
+    backgroundColor: 'antiquewhite',
+  },
+
+  STATUS_WON: {
+    backgroundColor: 'green',
+  },
+
+  STATUS_LOST: {
+    backgroundColor: 'red',
   },
 });
