@@ -14,6 +14,12 @@ export default class Game extends Component {
     .slice(0, this.props.randomNumberCount - 3)
     .reduce((acc, cur) => acc + cur, 0);
 
+  state = {
+    selectedNumbers: [0, 4],
+  };
+
+  isSelected = index => this.state.selectedNumbers.indexOf(index) >= 0;
+
   render() {
     return (
       <View style={styles.container}>
@@ -26,11 +32,11 @@ export default class Game extends Component {
             return (
               <View style={styles.childContainer} key={idx}>
                 <RandomNumber
-                  style={styles.option}
                   key={idx - 1}
                   number={this.randomNumbers[idx - 1]}
+                  isSelected={this.isSelected(idx - 1)}
                 />
-                <RandomNumber style={styles.option} key={idx} number={num} />
+                <RandomNumber key={idx} number={num} isSelected={this.isSelected(idx)} />
               </View>
             );
           }
