@@ -1,28 +1,82 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class Game extends Component {
+  // TODO: Randomize order. Leaving this way for now for easy testing.
+  randomNumbers = Array.from({ length: this.props.randomNumberCount }).map(() =>
+    Math.ceil(Math.random() * 10)
+  );
+
+  target = this.randomNumbers
+    .slice(0, this.props.randomNumberCount - 3)
+    .reduce((acc, cur) => acc + cur, 0);
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.target}>42</Text>
+        <View style={styles.targetContainer}>
+          <Text style={styles.target}>{this.target}</Text>
+        </View>
+
+        {this.randomNumbers.map((num, idx) => {
+          if (idx % 2 === 1) {
+            return (
+              <View style={styles.childContainer} key={idx}>
+                <Text style={styles.option} key={idx - 1}>
+                  {this.randomNumbers[idx - 1]}
+                </Text>
+                <Text style={styles.option} key={idx}>
+                  {num}
+                </Text>
+              </View>
+            );
+          }
+        })}
       </View>
     );
   }
 }
 
+Game.propTypes = {
+  randomNumberCount: PropTypes.number.isRequired,
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'skyblue',
-    flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    display: 'flex',
     flex: 1,
+  },
+
+  targetContainer: {
+    justifyContent: 'center',
+    backgroundColor: 'skyblue',
+    flex: 4,
   },
 
   target: {
     backgroundColor: 'antiquewhite',
-    fontSize: 40,
-    margin: 20,
     textAlign: 'center',
+    marginHorizontal: 50,
+    fontSize: 60,
+  },
+
+  childContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flex: 3,
+    backgroundColor: 'steelblue',
+  },
+
+  option: {
+    marginHorizontal: 50,
+    width: 50,
+    backgroundColor: 'antiquewhite',
+    textAlign: 'center',
+    fontSize: 40,
+    height: 50,
+    width: 120,
   },
 });
